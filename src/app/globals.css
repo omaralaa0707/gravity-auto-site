@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+@theme {
+  /*
+   * Achromatic, sampled from their own forecourt: the graphite concrete
+   * box their sign is mounted on, and the plain silver of the channel
+   * letters themselves. No colour was invented — their real identity has
+   * none, and the physics diagram at the centre of the page doesn't need
+   * one either.
+   */
+  --color-ground: #26282d; /* their concrete facade */
+  --color-ground-2: #2f3237; /* raised card */
+  --color-ground-3: #3c4046; /* rules only — never text */
+  --color-cream: #eeeeec; /* 12.9:1 on ground */
+  --color-cream-2: #c7c9cc; /* 9.0:1 on ground */
+  --color-steel: #a8aeb6; /* their own channel-letter silver: 6.7:1 on ground */
+
+  --font-display: var(--font-orbitron), "Arial Narrow", sans-serif;
+  --font-body: var(--font-lexend), system-ui, sans-serif;
+  --font-arabic-display: var(--font-rubik), "Segoe UI", sans-serif;
+  --font-arabic-body: var(--font-vazirmatn), system-ui, sans-serif;
+
+  --text-hero: clamp(2rem, 4.6vw, 3.6rem);
+  --text-display: clamp(1.45rem, 2.8vw, 2.2rem);
+  --text-lead: clamp(0.98rem, 1.1vw, 1.12rem);
+
+  /* A mass doesn't ease into place — it falls, accelerating, and the
+     grid dips a little further than rest before it recovers, the way a
+     struck spring overshoots and settles. */
+  --ease-infall: cubic-bezier(0.5, 0, 0.18, 1);
+}
+
+@layer base {
+  section[id] { scroll-margin-top: 5.5rem; }
+
+  html {
+    background: var(--color-ground);
+    color: var(--color-cream);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: auto;
+  }
+
+  body { font-family: var(--font-body); overflow-x: hidden; }
+  html[dir="rtl"] body { font-family: var(--font-arabic-body); }
+
+  ::selection { background: var(--color-steel); color: var(--color-ground); }
+  :focus-visible { outline: 2px solid var(--color-steel); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility font-display { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.02em; }
+html[dir="rtl"] .font-display { font-family: var(--font-arabic-display); text-transform: none; letter-spacing: 0; }
+
+@utility label {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.64rem;
+  font-weight: 600;
+}
+html[dir="rtl"] .label {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.86rem;
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion signature: infall.
+ *
+ * Content drops in from slightly above and enlarged, accelerating rather
+ * than easing gently, dips a little past its resting point on arrival,
+ * and recovers — the way a mass actually falls into a well rather than
+ * being slid or faded into place.
+ * ------------------------------------------------------------------------ */
+
+@keyframes infall {
+  0% { opacity: 0; transform: translateY(-22px) scale(0.972); }
+  58% { opacity: 1; transform: translateY(3px) scale(1.004); }
+  80% { transform: translateY(-1px) scale(0.998); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes infall { from { opacity: 1; transform: none; } to { opacity: 1; transform: none; } }
+}
+
+[data-infall] { opacity: 0; }
+[data-infall][data-seen] {
+  animation: infall 640ms var(--ease-infall) var(--infall-delay, 0ms) both;
+}
+
+/* ---------------------------------------------------------------------------
+ * Arabic corrections. Keyed off [dir], never [lang] — browser translation
+ * rewrites lang. Unlayered so they outrank Tailwind utilities.
+ * ------------------------------------------------------------------------ */
+
+html[dir="ltr"] .text-hero { line-height: 1.1; }
+html[dir="rtl"] .text-hero {
+  font-size: clamp(2.1rem, 4.8vw, 3.3rem);
+  line-height: 1.35;
+}
+html[dir="ltr"] .text-display { line-height: 1.15; }
+html[dir="rtl"] .text-display {
+  font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+  line-height: 1.35;
+}
+
+html[dir="rtl"] [class*="tracking-["],
+html[dir="rtl"] .tracking-widest,
+html[dir="rtl"] .tracking-wider { letter-spacing: 0; }
+
+.fine { font-size: 0.78rem; line-height: 1.6; }
+html[dir="rtl"] .fine { font-size: 0.88rem; line-height: 1.9; }
+
+html[dir="rtl"] .text-lead { font-size: clamp(1.02rem, 1.15vw, 1.16rem); line-height: 1.95; }
+
+/* Marque names, model codes, figures and phone numbers stay Latin and LTR
+   inside Arabic copy. dir="ltr" isolates direction only, with no font or
+   alignment side effect. */
+.latin {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+html[dir="rtl"] .latin { text-align: right; }
