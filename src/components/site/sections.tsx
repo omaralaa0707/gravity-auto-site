@@ -382,7 +382,6 @@ export function Footer() {
           <MarkIcon className="h-6 w-6 text-steel" />
           <span className="font-display text-[0.92rem] text-cream">{c.brand.name}</span>
         </div>
-        <p className="fine max-w-[52ch] text-cream-2/75">{c.footer.disclaimer}</p>
         <p className="fine shrink-0 text-cream-2/60">{c.footer.rights}</p>
       </div>
     </footer>

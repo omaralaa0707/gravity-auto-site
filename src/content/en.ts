@@ -100,8 +100,7 @@ export const en: GravityContent = {
   },
 
   footer: {
-    disclaimer: "A concept design, built as a demonstration. Not an official Gravity Auto site, and not affiliated with them. All photography, marks and quoted copy belong to Gravity Auto.",
-    rights: "Concept by Claude",
+    rights: "© Gravity Auto. All rights reserved.",
   },
 
   a11y: {
